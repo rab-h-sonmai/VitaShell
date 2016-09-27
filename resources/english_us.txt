@@ -73,6 +73,14 @@ INSTALL_QUESTION                     = "Do you want to install this package?"
 INSTALL_WARNING                      = "This package requests extended permissions.\It will have access to your personal information.\If you did not obtain it from a trusted source,\please proceed at your own caution.\\Would you like to continue the install?"
 HASH_FILE_QUESTION                   = "SHA1 hashing may take a long time. Continue?"
 
+# Settings
+SETTINGS_TITLE                       = "Settings"
+SETTINGS_CATEGORY_GENERAL_TITLE      = "General"
+SETTINGS_CATEGORY_FTP_TITLE          = "Ftp"
+THEME_SETTING                        = "Theme"
+FTP_ENABLED_SETTING                  = "Ftp enabled"
+LANGUAGE_SETTING                     = "Language"
+
 # Others
 PLEASE_WAIT                          = "Please wait..."
 SAVE_MODIFICATIONS                   = "Do you want to save your modifications?"
@@ -83,3 +91,4 @@ SYS_INFO                             = "System software: %s\Model: 0x%08X\MAC ad
 UPDATE_QUESTION                      = "VitaShell %s is now available.\\Do you want to update the application?"
 TOOLBOX                              = "Toolbox"
 SYSINFO_TITLE                        = "System Information"
+

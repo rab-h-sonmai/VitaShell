@@ -103,12 +103,24 @@ enum LanguageContainer {
 	FTP_SERVER,
 	SYS_INFO,
 	UPDATE_QUESTION,
-	LANGUAGE_CONTRAINER_SIZE,
+
+    // Settings
+    SETTINGS_TITLE,
+    SETTINGS_CATEGORY_GENERAL_TITLE,
+    SETTINGS_CATEGORY_FTP_TITLE,
+    FTP_ENABLED_SETTING,
+    THEME_SETTING,
+    LANGUAGE_SETTING,
+
+	LANGUAGE_CONTAINER_SIZE,
 };
 
-extern char *language_container[LANGUAGE_CONTRAINER_SIZE];
+extern char *language_container[LANGUAGE_CONTAINER_SIZE];
 
 void freeLanguageContainer();
 void loadLanguage(int id);
+
+char *getLang(int id);
+int getLangCount();
 
 #endif

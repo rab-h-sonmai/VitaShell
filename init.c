@@ -44,6 +44,11 @@ INCLUDE_EXTERN_RESOURCE(pause_png);
 INCLUDE_EXTERN_RESOURCE(fastforward_png);
 INCLUDE_EXTERN_RESOURCE(fastrewind_png);
 
+INCLUDE_EXTERN_RESOURCE(settings_general_png);
+
+INCLUDE_EXTERN_RESOURCE(ltrigger_png);
+INCLUDE_EXTERN_RESOURCE(rtrigger_png);
+
 INCLUDE_EXTERN_RESOURCE(theme_txt);
 INCLUDE_EXTERN_RESOURCE(colors_txt);
 INCLUDE_EXTERN_RESOURCE(english_us_txt);
@@ -74,6 +79,11 @@ static DefaultFile default_files[] = {
 	DEFAULT_FILE("ux0:VitaShell/theme/Default/pause.png", pause_png),
 	DEFAULT_FILE("ux0:VitaShell/theme/Default/fastforward.png", fastforward_png),
 	DEFAULT_FILE("ux0:VitaShell/theme/Default/fastrewind.png", fastrewind_png),
+
+    DEFAULT_FILE("ux0:VitaShell/theme/Default/ltrigger.png", ltrigger_png),
+    DEFAULT_FILE("ux0:VitaShell/theme/Default/rtrigger.png", rtrigger_png),
+
+	DEFAULT_FILE("ux0:VitaShell/theme/Default/settings_general.png", settings_general_png),
 };
 
 // System params

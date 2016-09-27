@@ -45,6 +45,11 @@ INCLUDE_EXTERN_RESOURCE(pause_png);
 INCLUDE_EXTERN_RESOURCE(fastforward_png);
 INCLUDE_EXTERN_RESOURCE(fastrewind_png);
 
+INCLUDE_EXTERN_RESOURCE(ltrigger_png);
+INCLUDE_EXTERN_RESOURCE(rtrigger_png);
+
+INCLUDE_EXTERN_RESOURCE(settings_general_png);
+
 // Shell colors
 int BACKGROUND_COLOR;
 int TITLE_COLOR;
@@ -104,18 +109,77 @@ int AUDIO_TIME_BAR_BG;
 vita2d_texture *folder_icon = NULL, *file_icon = NULL, *archive_icon = NULL, *image_icon = NULL, *audio_icon = NULL, *sfo_icon = NULL, *text_icon = NULL,
 			   *wifi_image = NULL, *ftp_image = NULL, *dialog_image = NULL, *context_image = NULL, *context_more_image = NULL, *battery_image = NULL, *battery_bar_red_image = NULL,
 			   *battery_bar_green_image = NULL, *battery_bar_charge_image = NULL, *bg_browser_image = NULL, *bg_hex_image = NULL, *bg_text_image = NULL,
-			   *bg_photo_image = NULL, *bg_audio_image = NULL, *cover_image = NULL, *play_image = NULL, *pause_image = NULL, *fastforward_image = NULL, *fastrewind_image = NULL;
+			   *bg_photo_image = NULL, *bg_audio_image = NULL, *cover_image = NULL, *play_image = NULL, *pause_image = NULL, *fastforward_image = NULL, *fastrewind_image = NULL,
+               *ltrigger = NULL, *rtrigger = NULL, *settings_general = NULL;
 
 vita2d_texture *wallpaper_image[MAX_WALLPAPERS];
 
 vita2d_texture *previous_wallpaper_image = NULL, *current_wallpaper_image = NULL;
+
+char current_theme_name[MAX_PATH_LENGTH];
 
 int wallpaper_count = 0;
 
 vita2d_pgf *font = NULL;
 char font_size_cache[256];
 
-void loadTheme() {
+int theme_loaded = 0;
+
+void free_theme() {
+    #define FREE_TEXTURE(tex) {if (tex) { vita2d_free_texture(tex); tex = NULL; }}
+
+    FREE_TEXTURE(folder_icon);
+    FREE_TEXTURE(file_icon);
+    FREE_TEXTURE(archive_icon);
+    FREE_TEXTURE(image_icon);
+    FREE_TEXTURE(audio_icon);
+    FREE_TEXTURE(sfo_icon);
+    FREE_TEXTURE(text_icon);
+
+    FREE_TEXTURE(ftp_image);
+    FREE_TEXTURE(dialog_image);
+    FREE_TEXTURE(context_image);
+    FREE_TEXTURE(context_more_image);
+    FREE_TEXTURE(battery_image);
+    FREE_TEXTURE(battery_bar_red_image);
+
+    FREE_TEXTURE(battery_bar_green_image);
+    FREE_TEXTURE(battery_bar_charge_image);
+    FREE_TEXTURE(bg_browser_image);
+    FREE_TEXTURE(bg_hex_image);
+    FREE_TEXTURE(bg_text_image);
+
+    FREE_TEXTURE(bg_photo_image);
+    FREE_TEXTURE(bg_audio_image);
+    FREE_TEXTURE(cover_image);
+    FREE_TEXTURE(play_image);
+    FREE_TEXTURE(pause_image);
+    FREE_TEXTURE(fastforward_image);
+    FREE_TEXTURE(fastrewind_image);
+
+    FREE_TEXTURE(ltrigger);
+    FREE_TEXTURE(rtrigger);
+
+    FREE_TEXTURE(settings_general);
+
+    int i;
+    for (i = 0; i < wallpaper_count; i++) {
+        FREE_TEXTURE(wallpaper_image[i]);
+    }
+    wallpaper_count = 0;
+    previous_wallpaper_image = NULL;
+    current_wallpaper_image = NULL;
+
+    vita2d_free_pgf(font);
+    font = NULL;
+
+    theme_loaded = 0;
+}
+
+void loadTheme(char *theme_name) {
+    if (theme_loaded)
+        free_theme();
+
 	#define COLOR_ENTRY(name) { #name, CONFIG_TYPE_HEXDECIMAL, (void *)&name }
 	ConfigEntry colors_entries[] = {
 		// Shell colors
@@ -182,13 +246,7 @@ void loadTheme() {
 	if (use_custom_config) {
 		char path[MAX_PATH_LENGTH];
 
-		char *theme_name = NULL;
-		ConfigEntry theme_entries[] = {
-			{ "THEME_NAME", CONFIG_TYPE_STRING, (void *)&theme_name },
-		};
-
-		// Load theme config
-		readConfig("ux0:VitaShell/theme/theme.txt", theme_entries, sizeof(theme_entries) / sizeof(ConfigEntry));
+        strcpy(current_theme_name, theme_name);
 
 		if (theme_name) {
 			// Load colors config
@@ -274,6 +332,15 @@ void loadTheme() {
 			snprintf(path, MAX_PATH_LENGTH, "ux0:VitaShell/theme/%s/fastrewind.png", theme_name);
  			fastrewind_image = vita2d_load_PNG_file(path);
 
+			snprintf(path, MAX_PATH_LENGTH, "ux0:VitaShell/theme/%s/settings_general.png", theme_name);
+ 			settings_general = vita2d_load_PNG_file(path);
+
+			snprintf(path, MAX_PATH_LENGTH, "ux0:VitaShell/theme/%s/rtrigger.png", theme_name);
+ 			rtrigger = vita2d_load_PNG_file(path);
+
+			snprintf(path, MAX_PATH_LENGTH, "ux0:VitaShell/theme/%s/ltrigger.png", theme_name);
+ 			ltrigger = vita2d_load_PNG_file(path);
+
 			// Wallpapers
 			snprintf(path, MAX_PATH_LENGTH, "ux0:VitaShell/theme/%s/wallpaper.png", theme_name);
 			vita2d_texture *image = vita2d_load_PNG_file(path);
@@ -298,7 +365,9 @@ void loadTheme() {
 			snprintf(path, MAX_PATH_LENGTH, "ux0:VitaShell/theme/%s/font.pgf", theme_name);
  			font = vita2d_load_custom_pgf(path);
 		}
-	}
+	} else {
+        strcpy(current_theme_name, "Default");
+    }
 
 	// Load default pngs
 	if (!folder_icon)
@@ -394,6 +463,15 @@ void loadTheme() {
 	if (!fastrewind_image)
 		fastrewind_image = vita2d_load_PNG_buffer(&_binary_resources_fastrewind_png_start);
 
+    if (!ltrigger)
+        ltrigger = vita2d_load_PNG_buffer(&_binary_resources_ltrigger_png_start);
+
+    if (!rtrigger)
+        rtrigger = vita2d_load_PNG_buffer(&_binary_resources_rtrigger_png_start);
+
+    if (!settings_general)
+        settings_general = vita2d_load_PNG_buffer(&_binary_resources_settings_general_png_start);
+
 	// Load default font
 	if (!font)
 		font = vita2d_load_default_pgf();
@@ -407,4 +485,10 @@ void loadTheme() {
 
 		font_size_cache[i] = vita2d_pgf_text_width(font, FONT_SIZE, character);
 	}
+
+    theme_loaded = 1;
+}
+
+char *getCurrentTheme() {
+    return current_theme_name;
 }

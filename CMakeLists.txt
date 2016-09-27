@@ -55,6 +55,7 @@ SET(PROJECT_SOURCES
 	utils.c
 	sha1.c
 	list_dialog.c
+	settings_dialog.c
 	minizip/unzip.c
 	minizip/ioapi.c
 	bm.c
@@ -104,6 +105,9 @@ SET(PROJECT_RESOURCES
 	theme.txt
 	updater_eboot.bin
 	updater_param.bin
+    settings_general.png
+    ltrigger.png
+    rtrigger.png
 )
 
 
@@ -192,6 +196,7 @@ set(__PROJECT_EXTRA_JSON__ "")
 foreach(json ${PROJECT_EXTRA_JSON})
 	list(APPEND __PROJECT_EXTRA_JSON__ ${CMAKE_CURRENT_SOURCE_DIR}/${json})
 endforeach(json)
+
 
 add_custom_command(
 		OUTPUT ${PROJECT_TITLE}.velf

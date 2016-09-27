@@ -21,6 +21,8 @@
 
 #include "main.h"
 
+#define MOD(a, b) ((((a)%(b))+(b))%(b))
+
 #define ALIGN_CENTER(a, b) ((a - b) / 2)
 #define ALIGN_LEFT(x, w) (x - w)
 

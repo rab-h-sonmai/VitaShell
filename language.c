@@ -19,6 +19,7 @@
 #include "main.h"
 #include "config.h"
 #include "language.h"
+#include "utils.h"
 
 INCLUDE_EXTERN_RESOURCE(english_us_txt);
 
@@ -44,11 +45,11 @@ static char *lang[] ={
 	"turkish"
 };
 
-char *language_container[LANGUAGE_CONTRAINER_SIZE];
+char *language_container[LANGUAGE_CONTAINER_SIZE];
 
 void freeLanguageContainer() {
 	int i;
-	for (i = 0; i < LANGUAGE_CONTRAINER_SIZE; i++) {
+	for (i = 0; i < LANGUAGE_CONTAINER_SIZE; i++) {
 		if (language_container[i]) {
 			free(language_container[i]);
 			language_container[i] = NULL;
@@ -60,95 +61,103 @@ void loadLanguage(int id) {
 	freeLanguageContainer();
 
 	#define LANGUAGE_ENTRY(name) { #name, CONFIG_TYPE_STRING, (void *)&language_container[name] }
-	ConfigEntry language_entries[] = {
-		// General strings
-		LANGUAGE_ENTRY(ERROR),
-		LANGUAGE_ENTRY(OK),
-		LANGUAGE_ENTRY(YES),
-		LANGUAGE_ENTRY(NO),
-		LANGUAGE_ENTRY(CANCEL),
-		LANGUAGE_ENTRY(FOLDER),
-		LANGUAGE_ENTRY(OFFSET),
 
-		// Progress strings
-		LANGUAGE_ENTRY(MOVING),
-		LANGUAGE_ENTRY(COPYING),
-		LANGUAGE_ENTRY(DELETING),
-		LANGUAGE_ENTRY(EXPORTING),
-		LANGUAGE_ENTRY(INSTALLING),
-		LANGUAGE_ENTRY(DOWNLOADING),
-		LANGUAGE_ENTRY(EXTRACTING),
-		LANGUAGE_ENTRY(HASHING),
+    ConfigEntry language_entries[] = {
+            // General strings
+            LANGUAGE_ENTRY(ERROR),
+            LANGUAGE_ENTRY(OK),
+            LANGUAGE_ENTRY(YES),
+            LANGUAGE_ENTRY(NO),
+            LANGUAGE_ENTRY(CANCEL),
+            LANGUAGE_ENTRY(FOLDER),
+            LANGUAGE_ENTRY(OFFSET),
 
-		// Audio player strings
-		LANGUAGE_ENTRY(TITLE),
-		LANGUAGE_ENTRY(ALBUM),
-		LANGUAGE_ENTRY(ARTIST),
-		LANGUAGE_ENTRY(GENRE),
-		LANGUAGE_ENTRY(YEAR),
+            // Progress strings
+            LANGUAGE_ENTRY(MOVING),
+            LANGUAGE_ENTRY(COPYING),
+            LANGUAGE_ENTRY(DELETING),
+            LANGUAGE_ENTRY(EXPORTING),
+            LANGUAGE_ENTRY(INSTALLING),
+            LANGUAGE_ENTRY(DOWNLOADING),
+            LANGUAGE_ENTRY(EXTRACTING),
+            LANGUAGE_ENTRY(HASHING),
 
-		// Hex editor strings
-		LANGUAGE_ENTRY(CUT),
-		LANGUAGE_ENTRY(OPEN_HEX_EDITOR),
+            // Audio player strings
+            LANGUAGE_ENTRY(TITLE),
+            LANGUAGE_ENTRY(ALBUM),
+            LANGUAGE_ENTRY(ARTIST),
+            LANGUAGE_ENTRY(GENRE),
+            LANGUAGE_ENTRY(YEAR),
 
-		// Text editor strings
-		LANGUAGE_ENTRY(EDIT_LINE),
-		LANGUAGE_ENTRY(ENTER_SEARCH_TERM),
-		LANGUAGE_ENTRY(CUT),
-		LANGUAGE_ENTRY(INSERT_EMPTY_LINE),
+            // Hex editor strings
+            LANGUAGE_ENTRY(CUT),
+            LANGUAGE_ENTRY(OPEN_HEX_EDITOR),
 
-		// File browser context menu strings
-		LANGUAGE_ENTRY(MORE),
-		LANGUAGE_ENTRY(MARK_ALL),
-		LANGUAGE_ENTRY(UNMARK_ALL),
-		LANGUAGE_ENTRY(MOVE),
-		LANGUAGE_ENTRY(COPY),
-		LANGUAGE_ENTRY(PASTE),
-		LANGUAGE_ENTRY(DELETE),
-		LANGUAGE_ENTRY(RENAME),
-		LANGUAGE_ENTRY(NEW_FOLDER),
-		LANGUAGE_ENTRY(INSTALL_ALL),
-		LANGUAGE_ENTRY(INSTALL_FOLDER),
-		LANGUAGE_ENTRY(CALCULATE_SHA1),
-		LANGUAGE_ENTRY(EXPORT_MEDIA),
-		LANGUAGE_ENTRY(SEARCH),
+            // Text editor strings
+            LANGUAGE_ENTRY(EDIT_LINE),
+            LANGUAGE_ENTRY(ENTER_SEARCH_TERM),
+            LANGUAGE_ENTRY(CUT),
+            LANGUAGE_ENTRY(INSERT_EMPTY_LINE),
 
-		// File browser strings
-		LANGUAGE_ENTRY(COPIED_FILE),
-		LANGUAGE_ENTRY(COPIED_FOLDER),
-		LANGUAGE_ENTRY(COPIED_FILES_FOLDERS),
+            // File browser context menu strings
+            LANGUAGE_ENTRY(MORE),
+            LANGUAGE_ENTRY(MARK_ALL),
+            LANGUAGE_ENTRY(UNMARK_ALL),
+            LANGUAGE_ENTRY(MOVE),
+            LANGUAGE_ENTRY(COPY),
+            LANGUAGE_ENTRY(PASTE),
+            LANGUAGE_ENTRY(DELETE),
+            LANGUAGE_ENTRY(RENAME),
+            LANGUAGE_ENTRY(NEW_FOLDER),
+            LANGUAGE_ENTRY(INSTALL_ALL),
+            LANGUAGE_ENTRY(INSTALL_FOLDER),
+            LANGUAGE_ENTRY(CALCULATE_SHA1),
+            LANGUAGE_ENTRY(EXPORT_MEDIA),
+            LANGUAGE_ENTRY(SEARCH),
 
-		// Dialog questions
-		LANGUAGE_ENTRY(DELETE_FILE_QUESTION),
-		LANGUAGE_ENTRY(DELETE_FOLDER_QUESTION),
-		LANGUAGE_ENTRY(DELETE_FILES_FOLDERS_QUESTION),
-		LANGUAGE_ENTRY(EXPORT_FILE_QUESTION),
-		LANGUAGE_ENTRY(EXPORT_FOLDER_QUESTION),
-		LANGUAGE_ENTRY(EXPORT_FILES_FOLDERS_QUESTION),
-		LANGUAGE_ENTRY(EXPORT_NO_MEDIA),
-		LANGUAGE_ENTRY(EXPORT_SONGS_INFO),
-		LANGUAGE_ENTRY(EXPORT_PICTURES_INFO),
-		LANGUAGE_ENTRY(EXPORT_SONGS_PICTURES_INFO),
-		LANGUAGE_ENTRY(INSTALL_ALL_QUESTION),
-		LANGUAGE_ENTRY(INSTALL_FOLDER_QUESTION),
-		LANGUAGE_ENTRY(INSTALL_QUESTION),
-		LANGUAGE_ENTRY(INSTALL_WARNING),
-		LANGUAGE_ENTRY(HASH_FILE_QUESTION),
+            // File browser strings
+            LANGUAGE_ENTRY(COPIED_FILE),
+            LANGUAGE_ENTRY(COPIED_FOLDER),
+            LANGUAGE_ENTRY(COPIED_FILES_FOLDERS),
 
-		// Others
-		LANGUAGE_ENTRY(TOOLBOX),
-		LANGUAGE_ENTRY(SYSINFO_TITLE),
-		LANGUAGE_ENTRY(PLEASE_WAIT),
-		LANGUAGE_ENTRY(SAVE_MODIFICATIONS),
-		LANGUAGE_ENTRY(NO_SPACE_ERROR),
-		LANGUAGE_ENTRY(WIFI_ERROR),
-		LANGUAGE_ENTRY(FTP_SERVER),
-		LANGUAGE_ENTRY(SYS_INFO),
-		LANGUAGE_ENTRY(UPDATE_QUESTION),
-	};
+            // Dialog questions
+            LANGUAGE_ENTRY(DELETE_FILE_QUESTION),
+            LANGUAGE_ENTRY(DELETE_FOLDER_QUESTION),
+            LANGUAGE_ENTRY(DELETE_FILES_FOLDERS_QUESTION),
+            LANGUAGE_ENTRY(EXPORT_FILE_QUESTION),
+            LANGUAGE_ENTRY(EXPORT_FOLDER_QUESTION),
+            LANGUAGE_ENTRY(EXPORT_FILES_FOLDERS_QUESTION),
+            LANGUAGE_ENTRY(EXPORT_NO_MEDIA),
+            LANGUAGE_ENTRY(EXPORT_SONGS_INFO),
+            LANGUAGE_ENTRY(EXPORT_PICTURES_INFO),
+            LANGUAGE_ENTRY(EXPORT_SONGS_PICTURES_INFO),
+            LANGUAGE_ENTRY(INSTALL_ALL_QUESTION),
+            LANGUAGE_ENTRY(INSTALL_FOLDER_QUESTION),
+            LANGUAGE_ENTRY(INSTALL_QUESTION),
+            LANGUAGE_ENTRY(INSTALL_WARNING),
+            LANGUAGE_ENTRY(HASH_FILE_QUESTION),
 
-	// Load default config file
-	readConfigBuffer(&_binary_resources_english_us_txt_start, (int)&_binary_resources_english_us_txt_size, language_entries, sizeof(language_entries) / sizeof(ConfigEntry));
+            // Others
+            LANGUAGE_ENTRY(TOOLBOX),
+            LANGUAGE_ENTRY(SYSINFO_TITLE),
+            LANGUAGE_ENTRY(PLEASE_WAIT),
+            LANGUAGE_ENTRY(SAVE_MODIFICATIONS),
+            LANGUAGE_ENTRY(NO_SPACE_ERROR),
+            LANGUAGE_ENTRY(WIFI_ERROR),
+            LANGUAGE_ENTRY(FTP_SERVER),
+            LANGUAGE_ENTRY(SYS_INFO),
+            LANGUAGE_ENTRY(UPDATE_QUESTION),
+
+            // Settings
+            LANGUAGE_ENTRY(SETTINGS_TITLE),
+            LANGUAGE_ENTRY(SETTINGS_CATEGORY_GENERAL_TITLE),
+            LANGUAGE_ENTRY(SETTINGS_CATEGORY_FTP_TITLE),
+            LANGUAGE_ENTRY(FTP_ENABLED_SETTING),
+            LANGUAGE_ENTRY(THEME_SETTING),
+            LANGUAGE_ENTRY(LANGUAGE_SETTING),
+    };
+    // Load default config file
+    readConfigBuffer(&_binary_resources_english_us_txt_start, (int)&_binary_resources_english_us_txt_size, language_entries, sizeof(language_entries) / sizeof(ConfigEntry));
 
 	// Load custom config file
 	if (use_custom_config) {
@@ -158,4 +167,12 @@ void loadLanguage(int id) {
 			readConfig(path, language_entries, sizeof(language_entries) / sizeof(ConfigEntry));
 		}
 	}
+}
+
+char *getLang(int id) {
+    return lang[id];
+}
+
+int getLangCount() {
+    return sizeof(lang) / sizeof(char *);
 }

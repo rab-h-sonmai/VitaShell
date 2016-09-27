@@ -45,6 +45,7 @@
 #include "utils.h"
 #include "sfo.h"
 #include "list_dialog.h"
+#include "settings_dialog.h"
 
 #include "audio/vita_audio.h"
 
@@ -1275,6 +1276,26 @@ int dialogSteps() {
 	return refresh;
 }
 
+void setFtpEnabled(int enabled) {
+        // Init FTP
+		if (!ftpvita_is_initialized() && enabled) {
+			int res = ftpvita_init(vita_ip, &vita_port);
+			if (res < 0) {
+				initMessageDialog(SCE_MSG_DIALOG_BUTTON_TYPE_CANCEL, language_container[PLEASE_WAIT]);
+				dialog_step = DIALOG_STEP_FTP_WAIT;
+			} else {
+				initFtp();
+			}
+
+			// Lock power timers
+			powerLock();
+		} else if (ftpvita_is_initialized() && !enabled) {
+            ftpvita_fini();
+            powerUnlock();
+		}
+}
+
+
 void fileBrowserMenuCtrl() {
 	// Show toolbox list dialog
 	if (current_buttons & SCE_CTRL_START) {
@@ -1289,27 +1310,14 @@ void fileBrowserMenuCtrl() {
 		}
 	}
 
+
 	// FTP
 	if (pressed_buttons & SCE_CTRL_SELECT) {
-		// Init FTP
-		if (!ftpvita_is_initialized()) {
-			int res = ftpvita_init(vita_ip, &vita_port);
-			if (res < 0) {
-				initMessageDialog(SCE_MSG_DIALOG_BUTTON_TYPE_CANCEL, language_container[PLEASE_WAIT]);
-				dialog_step = DIALOG_STEP_FTP_WAIT;
-			} else {
-				initFtp();
-			}
 
-			// Lock power timers
-			powerLock();
-		}
+        if (getSettingsDialogMode() == SETTINGS_DIALOG_CLOSED) {
+            showSettingsDialog();
 
-		// Dialog
-		if (ftpvita_is_initialized()) {
-			initMessageDialog(SCE_MSG_DIALOG_BUTTON_TYPE_OK_CANCEL, language_container[FTP_SERVER], vita_ip, vita_port);
-			dialog_step = DIALOG_STEP_FTP;
-		}
+        }
 	}
 
 	// Move
@@ -1492,7 +1500,9 @@ int shellMain() {
 
 		// Control
 		if (dialog_step == DIALOG_STEP_NONE) {
-			if (getContextMenuMode() != CONTEXT_MENU_CLOSED) {
+			if (getSettingsDialogMode() != SETTINGS_DIALOG_CLOSED) {
+                settingsDialogCtrl();
+            } else if (getContextMenuMode() != CONTEXT_MENU_CLOSED) {
 				contextMenuCtrl(&context_menu);
 			} else if (getListDialogMode() != LIST_DIALOG_CLOSE) {
 				listDialogCtrl();
@@ -1677,6 +1687,9 @@ int shellMain() {
 		// Draw list dialog
 		drawListDialog();
 
+		// Draw settings dialog
+		drawSettingsDialog();
+
 		// End drawing
 		endDrawing();
 	}
@@ -1740,11 +1753,8 @@ int main(int argc, const char *argv[]) {
 	if (current_buttons & SCE_CTRL_LTRIGGER)
 		use_custom_config = 0;
 
-	// Load theme
-	loadTheme();
-
-	// Load language
-	loadLanguage(language);
+	// Load settings
+	loadSettings();
 
 	// Init context menu width
 	initContextMenuWidth();

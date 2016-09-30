@@ -156,14 +156,24 @@ add_executable(${PROJECT_TITLE}.elf ${PROJECT_SOURCES})
 add_dependencies(${PROJECT_TITLE}.elf libpromoter)
 target_link_libraries(${PROJECT_TITLE}.elf ${PROJECT_LIBS})
 
+set (__RESOURCE_TARGETS__  "")
 foreach(res ${PROJECT_RESOURCES})
-	string(REPLACE "." "_" res_obj ${res})
-	add_custom_command(
-			OUTPUT ${res_obj}.o
-			COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_LD} -r -b binary -o ${CMAKE_CURRENT_BINARY_DIR}/${res_obj}.o resources/${res}
-	)
-	target_sources(${PROJECT_TITLE}.elf PUBLIC ${res_obj}.o)
+    string(REPLACE "." "_" res_obj ${res})
+    add_custom_command(
+            OUTPUT ${res_obj}.o
+            COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_LD} -r -b binary -o ${CMAKE_CURRENT_BINARY_DIR}/${res_obj}.o resources/${res}
+            DEPENDS resources/${res}
+    )
+
+    target_sources(${PROJECT_TITLE}.elf PUBLIC ${res_obj}.o)
+    list(APPEND __RESOURCE_TARGETS__  ${res_obj}.o)
 endforeach(res)
+
+add_custom_target(
+        resources
+        DEPENDS ${__RESOURCE_TARGETS__}
+)
+add_dependencies(${PROJECT_TITLE}.elf resources)
 
 
 set(__SEND_ASSETS_COMMAND__ "echo;sending;resources")

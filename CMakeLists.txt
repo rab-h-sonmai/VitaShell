@@ -64,6 +64,7 @@ SET(PROJECT_SOURCES
 	audio/oggplayer.c
 	audio/mp3player.c
 	audio/mp3xing.c
+    audio/lrcparse.c
 	libmad/bit.c
 	libmad/decoder.c
 	libmad/fixed.c
@@ -99,6 +100,7 @@ SET(PROJECT_RESOURCES
 	sfo_icon.png
 	stop.png
 	text_icon.png
+    wifi.png
 	theme.txt
 	updater_eboot.bin
 	updater_param.bin
@@ -108,7 +110,8 @@ SET(PROJECT_RESOURCES
 SET(PROJECT_LIBS
 	vorbisfile 
 	ogg 
-	vorbis 
+	vorbis
+    onig
 	ftpvita 
 	vita2d 
 	png 

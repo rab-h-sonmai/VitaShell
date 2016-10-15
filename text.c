@@ -517,7 +517,10 @@ int textViewer(char *file) {
 
 	char *buffer_base = malloc(BIG_BUFFER_SIZE);
 	if (!buffer_base)
+	{
+		free(s);
 		return -1;
+	}
 
     s->running = 1;
 	s->hex_viewer = 0; 
@@ -538,8 +541,10 @@ int textViewer(char *file) {
 	}
 
 	if (s->size < 0) {
+		int result = s->size;
 		free(buffer_base);
-		return s->size;
+		free(s);
+		return result;
 	}
 
 	s->buffer = buffer_base;
